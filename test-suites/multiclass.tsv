@@ -1,0 +1,4 @@
+TEST_ID	Description	Size	Duration	Source_URL	run_setup_cmd	run_exit_code	TRAIN_FILE	TRAIN_URL	-split	-target	-e	-y	IGNORE	-modelonly
+letter				https://www.openml.org/d/6		0	dataset_6_letter.csv	https://www.openml.org/data/get_csv/26/dataset_26_nursery.arff	70			YES		YES
+nursery				https://www.openml.org/d/26		0	dataset_26_nursery.csv	https://www.openml.org/data/get_csv/6/dataset_6_letter.arff	70			YES		YES
+micro-mass				https://www.openml.org/d/1515		0	phpHyLSNF.csv	https://www.openml.org/data/get_csv/1593707/phpHyLSNF	70			YES		YES
