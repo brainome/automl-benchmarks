@@ -42,8 +42,7 @@ echo 'testing connection with snowflake'
 python3 connect.py
 
 echo 'downloading data from open ml into /Dropbox/Open_ML-Data/'
-mkdir "/Dropbox/Open_ML-Data/"
-cd data
+mkdir -f "/Dropbox/Open_ML-Data/"
 python3 opem_ml_download_data.py
 ```
 
@@ -54,13 +53,14 @@ credentials = ['<username>', '<password>', '<account>']
 warehouse = database = schema = "<whatevers>"
 ```
 ## Demonstrations
-### Running titanic proof of concept
+### Usage
+python3 open_ml_experiement.py <tool_name> <suite_tsv_file> <data_dir>
+
+### Running open_ml_experiment
 ```bash
-python3 demo_titanic
+python3 open_ml_experiement.py sagemaker test-suites/open_ml_select.tsv /Dropbox/OpenML-Data/
 ```
 
-### Running open_ml_select proof of concept
-```bash
-python3 demo_open_ml
-python3 demo_open_ml benchmark
-```
+### Results and Predictions
+	RESULT_DIR = f"{tool}-runs"
+	PREDICTIONS_DIR = f"{tool}-predictions"
