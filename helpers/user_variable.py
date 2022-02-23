@@ -24,7 +24,16 @@ class UndefinedUserVariable(Exception):
 	def __str__(self):
 		return f'At line {self.line_number} of {self.script} there is a variable that must be defined by the user.'
 
+
 class UserDefinedVariable:
 
-	def __init__(self, line_number, script):
-		raise UndefinedUserVariable(line_number, script)
+	creds = {
+		# sagemaker role
+		"19": "arn:aws:iam::024158331100:role/role_sagemaker"
+	}
+
+	def __init__(self, key, script):
+		try:
+			return self.creds[key]
+		except:
+			raise UndefinedUserVariable(key, script)
