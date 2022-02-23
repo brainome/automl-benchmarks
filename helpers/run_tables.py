@@ -1,13 +1,19 @@
+# Brainome Daimensions(tm)
 #
-# BRAINOME CONFIDENTIAL
-# Copyright (c) 2021-22 Brainome Incorporated. All Rights Reserved.
-# NOTICE: All information contained herein is, and remains the property of
-# Brainome Incorporated and its suppliers, if any. The intellectual and
-# technical concepts contained herein are proprietary to Brainome Incorporated and its
-# suppliers and may be covered by U.S. and Foreign Patents, patents in process,
-# and are protected by trade secret or copyright law. Dissemination of this information or
-# reproduction of this material is strictly forbidden unless prior written permission is
-# obtained from Brainome Incorporated.
+# The Brainome Table Compiler(tm)
+# Copyright (c) 2022 Brainome Incorporated. All Rights Reserved.
+# GPLv3 license, all text above must be included in any redistribution.
+# See LICENSE.TXT for more information.
+#
+# This program may use Brainome's servers for cloud computing. Server use
+# is subject to separate license agreement.
+#
+# Contact: itadmin@brainome.ai
+# for questions and suggestions.
+#
+# @author: andy.stevko@brainome.ai
+# @author: zachary.stone@brainome.ai
+
 
 """
 bench marker for open_ml test cases on google auto ml
