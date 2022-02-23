@@ -13,7 +13,7 @@
 #
 # @author: zachary.stone@brainome.ai
 # @author: andy.stevko@brainome.ai
-
+import logging
 import os
 import shutil
 import csv
@@ -23,6 +23,9 @@ import sys
 import argparse
 import time
 from open_ml_experiment import get_target, get_valid_test_id
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
 
 MODEL_TYPES = ['RF', 'NN', 'DT', 'SVM']
 SPLITS_DIR = 'TRAIN_TEST_SPLITS'
@@ -50,7 +53,7 @@ def split(test_params, data_dir):
 		print(f'splitting: {cmd}')
 		os.system(cmd)
 	else:
-		print('data already split')
+		print(f'{source_file} data already split')
 
 
 def make_predictor(test_params, model_type, data_dir, multiclass=False):
@@ -96,23 +99,29 @@ def update_model_results(test_params, model_type, new_results):
 def main(suite, data_dir):
 
 	assert os.path.exists(suite)
-	
-	for model_type in MODEL_TYPES:
-		print(f'Working on {model_type}.')
-		prepare_run_directory(model_type)
-		with open(suite) as f:
-			reader = csv.DictReader(f, delimiter='\t')
-			for idx, test_params in enumerate(reader):
-				if test_params.get('IGNORE'):
-					continue
-				split(test_params, data_dir)
-				train_time = make_predictor(test_params, model_type, data_dir, multiclass=('multiclass' in suite))
-				new_results = run_predictor(test_params, model_type)
-				# add test information to json output
-				update_model_results(test_params, model_type, new_results)
-	
-	with open('btc-runs/btc-times.json', 'w+') as json_out:
-		print(json.dumps(BTC_TIMES), file=json_out)
+
+	try:
+		for model_type in MODEL_TYPES:
+			print(f'Working on {model_type}.')
+			prepare_run_directory(model_type)
+			with open(suite) as f:
+				reader = csv.DictReader(f, delimiter='\t')
+				for idx, test_params in enumerate(reader):
+					try:
+						if test_params.get('IGNORE'):
+							continue
+						split(test_params, data_dir)
+						train_time = make_predictor(test_params, model_type, data_dir, multiclass=('multiclass' in suite))
+						new_results = run_predictor(test_params, model_type)
+						# add test information to json output
+						update_model_results(test_params, model_type, new_results)
+					except ValueError as my_error:
+						logger.error(f"test scenario fail {test_params['TEST_ID']}", exc_info=my_error)
+
+	finally:
+		with open('btc-runs/btc-times.json', 'w+') as json_out:
+			print(json.dumps(BTC_TIMES), file=json_out)
+
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
@@ -121,6 +130,6 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	if not os.path.exists(SPLITS_DIR):
 		os.mkdir(SPLITS_DIR)
-	main(args.suite, args.data_dir)
+	main(args.suite, "")
 
 

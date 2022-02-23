@@ -1,0 +1,8 @@
+.idea/
+TRAIN_TEST_SPLITS/
+__pycache__/
+btc-runs/
+clean.state
+stub*.py
+venv*
+helpers/pred.py
