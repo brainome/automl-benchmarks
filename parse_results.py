@@ -37,10 +37,10 @@ def get_btc_val_acc(model_type, test_id):
 	test_id = test_id.replace('-', '_')
 	handle = f"btc-runs/{model_type}/{test_id}.json"
 	json_dict = json.load(open(handle))
-	#if args.test_suite == 'test-suites/multiclass.tsv':
-	val_acc = float(json_dict['session']['system_meter']['validation_stats']['accuracy'])
-	#else:
-	#	val_acc = float(json_dict['session']['system_meter']['validation_accuracy'])
+	if args.test_suite == 'test-suites/multiclass.tsv':
+		val_acc = 100. * float(json_dict['session']['system_meter']['validation_stats']['accuracy'])
+	else:
+		val_acc = float(json_dict['session']['system_meter']['validation_accuracy'])
 	return val_acc
 
 
