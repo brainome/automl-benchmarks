@@ -21,3 +21,5 @@ with open(SUITE_FILE, newline='') as scenario:
             url_file = train_file.parents[0] / uri_filename
             print(f'{train_filename} does not exist, downloading {url_file}')
             urllib.request.urlretrieve(train_url, url_file)
+        else:
+            print(f"found {train_filename}")
