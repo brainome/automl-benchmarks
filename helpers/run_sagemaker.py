@@ -52,7 +52,7 @@ INPUT_DATA_CONFIG = [
         "DataSource": {
             "S3DataSource": {
                 "S3DataType": "S3Prefix",
-                "S3Uri": f"s3://{BUCKET}/data/train",
+                "S3Uri": f"s3://{BUCKET}/data_train",
             }
         },
         "TargetAttributeName": "",
@@ -70,7 +70,7 @@ def upload_data(verbose=False):
     start_upload = time.time()
     train_data_s3_path = SESSION.upload_data(path=args.train_file, key_prefix=f"data_train")
     test_data_s3_path = SESSION.upload_data(
-        path=args.test_file, key_prefix=f"data/test"
+        path=args.test_file, key_prefix=f"data_test"
     )
     INPUT_DATA_CONFIG[0]["DataSource"]["S3DataSource"]["S3Uri"] = train_data_s3_path
     TRANSFORM_INPUT["DataSource"]["S3DataSource"]["S3Uri"] = test_data_s3_path

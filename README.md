@@ -38,10 +38,9 @@ brainome login
 
 echo "install aws cli e.g. python3 -m pip install awscli"
 
-echo "snowflake credentials required"
-vim config.py
-echo 'testing connection with snowflake'
-python3 connect.py
+echo "settings required"
+vim helpers/user_variable.py
+
 
 echo 'downloading data from open ml into /Dropbox/Open_ML-Data/'
 mkdir -f "/Dropbox/Open_ML-Data/"
