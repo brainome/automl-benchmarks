@@ -15,3 +15,5 @@
 # @author: zachary.stone@brainome.ai
 
 brainome
+google.api_core
+google.cloud
