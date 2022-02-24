@@ -24,12 +24,12 @@ ML benchmarks comparing brainome, google, sage maker, and azure engines
 ```bash
 echo "clone source"
 git clone git@github.com:brainome/automl-benchmarks.git
-cd automl-benchmarks
 sudo apt install unzip
 
 echo "From a new terminal session for each"
 echo "create/activate FOUR virtual envs - one per vendor"
 echo "################## BRAINOME ##################"
+cd automl-benchmarks
 python3 -m venv venv-brainome
 source venv-brainome/bin/activate
 python3 -m pip install -U pip
@@ -39,6 +39,7 @@ brainome login
 exit
 
 echo "################## AZURE ##################"
+cd automl-benchmarks
 python3 -m venv venv-azure
 source venv-azure/bin/activate
 python3 -m pip install -U pip
@@ -48,6 +49,7 @@ exit
 
 echo "################## SAGEMAKER ##################"
 echo "\ninstall aws cli e.g. python3 -m pip install awscli"
+cd automl-benchmarks
 python3 -m venv venv-sagemaker
 source venv-sagemaker/bin/activate
 python3 -m pip install -U pip
@@ -57,8 +59,9 @@ exit
 echo "#################### GOOGLE VERTEX / TABLES ############"
 echo "\nsetup google vertex env at https://cloud.google.com/vertex-ai/docs/start/cloud-environment"
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-374.0.0-linux-x86_64.tar.gz
-tar -xf google-cloud-sdk-374.0.0-linux-x86.tar.gz
+tar -xf google-cloud-sdk-374.0.0-linux-x86_64.tar.gz
 ./google-cloud-sdk/install.sh
+exit
 ./google-cloud-sdk/bin/gcloud init
 python3 -m venv venv-tables
 source venv-tables/bin/activate
