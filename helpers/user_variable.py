@@ -29,7 +29,9 @@ class UserDefinedVariable:
 
 	creds = {
 		# sagemaker role
-		"19": "arn:aws:iam::024158331100:role/role_sagemaker"
+		"19": "arn:aws:iam::024158331100:role/role_sagemaker",
+                # instance type
+                "121" : "ml.m5.2xlarge",
 	}
 
 	def __init__(self, key, script):
