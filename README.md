@@ -57,6 +57,9 @@ warehouse = database = schema = "<whatevers>"
 ### Usage
 python3 open_ml_experiement.py <tool_name> <suite_tsv_file> <data_dir>
 
+### Running brainome benchmark
+python3 open_ml_brainome_wrapper.py test-suites/open_ml_select.tsv /Dropbox/OpenML-Data/
+
 ### Running open_ml_experiment
 ```bash
 python3 open_ml_experiement.py sagemaker test-suites/open_ml_select.tsv /Dropbox/OpenML-Data/
