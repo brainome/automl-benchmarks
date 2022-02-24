@@ -23,43 +23,63 @@ ML benchmarks comparing brainome, google, sage maker, and azure engines
 
 ```bash
 echo "clone source"
-git clone git@github.com:andy-brainome/snowflake_proof.git
-cd snowflake_proof
-
-echo "create/activate virtual env and install dependencies"
-python3 -m venv venv3810
-source venv/bin/activate
-python3 -m pip install -U pip
-python3 -m pip install -r requirements.txt
+git clone git@github.com:brainome/automl-benchmarks.git
+cd automl-benchmarks
 sudo apt install unzip
 
+echo "From a new terminal session for each"
+echo "create/activate FOUR virtual envs - one per vendor"
+echo "################## BRAINOME ##################"
+python3 -m venv venv-brainome
+source venv-brainome/bin/activate
+python3 -m pip install -U pip
+python3 -m pip install -r requirements.txt
 echo "brainome key required for large files"
 brainome login
+exit
 
-echo "install aws cli e.g. python3 -m pip install awscli"
-
+echo "################## AZURE ##################"
+python3 -m venv venv-azure
+source venv-azure/bin/activate
+python3 -m pip install -U pip
+python3 -m pip install -r requirements-azure.txt
 echo "create azure resources"
+exit
 
+echo "################## SAGEMAKER ##################"
+echo "\ninstall aws cli e.g. python3 -m pip install awscli"
+python3 -m venv venv-sagemaker
+source venv-sagemaker/bin/activate
+python3 -m pip install -U pip
+python3 -m pip install -r requirements-sagemaker.txt
+exit
+
+echo "#################### GOOGLE VERTEX / TABLES ############"
 echo "\nsetup google vertex env at https://cloud.google.com/vertex-ai/docs/start/cloud-environment"
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-374.0.0-linux-x86_64.tar.gz
 tar -xf google-cloud-sdk-374.0.0-linux-x86.tar.gz
 ./google-cloud-sdk/install.sh
 ./google-cloud-sdk/bin/gcloud init
-echo "settings required for install three clouds"
-vim helpers/user_variable.py
-
-
+python3 -m venv venv-tables
+source venv-tables/bin/activate
+python3 -m pip install -U pip
+python3 -m pip install -r requirements-tables.txt
+exit
+```
+## Fetch seed data from Open ML
+```bash
 echo 'downloading data from open ml into /Dropbox/Open_ML-Data/'
 mkdir -f "/Dropbox/Open_ML-Data/"
 python3 opem_ml_download_data.py
 ```
 
+
 ## Initialization
-Specify snowflake credentials and other configuration in config.py
-```python
-credentials = ['<username>', '<password>', '<account>']
-warehouse = database = schema = "<whatevers>"
+```bash
+echo "settings required for install three clouds"
+vim helpers/user_variable.py
 ```
+
 ## Demonstrations
 ### Usage
 python3 open_ml_experiement.py <tool_name> <suite_tsv_file> <data_dir>
