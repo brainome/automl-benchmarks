@@ -53,9 +53,9 @@ logger = logging.getLogger(__name__)
 
 # globals
 TIMESTAMP = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-BUCKET_NAME = UserDefinedVariable(50, os.path.basename(__file__))
-COMPUTE_REGION = UserDefinedVariable(51, os.path.basename(__file__))
-PROJECT_ID = UserDefinedVariable(52, os.path.basename(__file__))
+BUCKET_NAME = UserDefinedVariable.get("BUCKET_NAME")
+COMPUTE_REGION = UserDefinedVariable.get("COMPUTE_REGION")
+PROJECT_ID = UserDefinedVariable.get("PROJECT_ID")
 AUTO_ML_CLIENT = automl.AutoMlClient()
 TABLES_CLIENT = automl.TablesClient(project=PROJECT_ID, region=COMPUTE_REGION)
 STORAGE_CLIENT = storage.Client()

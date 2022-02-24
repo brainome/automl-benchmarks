@@ -15,31 +15,34 @@
 # @author: andy.stevko@brainome.ai
 
 
-class UndefinedUserVariable(Exception):
-
-	def __init__(self, line_number, script):
-		self.line_number = line_number
-		self.script = script
-
-	def __str__(self):
-		return f'At line {self.line_number} of {self.script} there is a variable that must be defined by the user.'
-
-
 class UserDefinedVariable:
 
 	credentials = {
-		# ##### AWS SPECIFIC ######
+		# ##### AWS ######
+		# REQUIRES "aws configure"
 		# sagemaker role
-		"sagemaker_role": "arn:aws:iam::024158331100:role/role_sagemaker",
+		"sagemaker_role": "arn:aws:iam::024158331100:role/role_sagemaker",		# TODO Obfuscate
 		# sagemaker instance type
 		"instance_type": "ml.m5.2xlarge",
 		# S3 bucket name
-		"bucket_name": "download.brainome.ai"
+		"bucket_name": "download.brainome.ai",									# TODO Obfuscate
+		# ####### AZURE Workspace params ##########
+		"workspace_name": 'brainome',											# TODO Obfuscate
+		"subscription_id": 'b245cbde-7433-4f70-b19a-9c812b627b1b',				# TODO Obfuscate
+		"resource_group": 'brainome',											# TODO Obfuscate
+		# ####### AZURE COMPUTE CLUSTER ##############
+		"CPU_CLUSTER_NAME": "cpu-cluster-4",
+		"vm_size": "Standard_DS12_v2",
+		"max_nodes": "4",
+		# ######### GOOGLE TABLES ########
+		"BUCKET_NAME": "brainome-automl-central",								# TODO Obfuscate
+		"COMPUTE_REGION": 'us-central1',
+		"PROJECT_ID": "fifth-glazing-334722",									# TODO Obfuscate
 	}
 
 	@classmethod
-	def get(cls, key, script):
+	def get(cls, key):
 		try:
 			return cls.credentials[key]
-		except:
-			raise UndefinedUserVariable(key, script)
+		except KeyError:
+			raise PermissionError(f"ERROR Mmissing credentials for {key} in user_variables.py")

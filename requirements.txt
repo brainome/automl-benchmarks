@@ -16,5 +16,7 @@
 
 brainome
 sagemaker
-
-
+google.api_core
+google.cloud
+azureml-core
+azureml-train-automl
