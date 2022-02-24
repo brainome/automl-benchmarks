@@ -21,25 +21,25 @@ class UserDefinedVariable:
 		# ##### AWS ######
 		# REQUIRES "aws configure"
 		# sagemaker role
-		"sagemaker_role": "arn:aws:iam::024158331100:role/role_sagemaker",		# TODO Obfuscate
+# 		"sagemaker_role": "arn:aws:iam::XXXXXXXXXXXXX:role/role_sagemaker",
 		# sagemaker instance type
 		"instance_type": "ml.m5.2xlarge",
 		# S3 bucket name
-		"bucket_name": "download.brainome.ai",									# TODO Obfuscate
+# 		"bucket_name": "XXXXXXXXXXXX",
 		# ####### AZURE Workspace params ##########
 		# see https://docs.microsoft.com/en-us/azure/machine-learning/quickstart-create-resources
 		# In the terminal, you may be asked to sign in to authenticate. Copy the code and follow the link to complete this step.
-		"workspace_name": 'brainome',											# TODO Obfuscate
-		"subscription_id": 'b245cbde-7433-4f70-b19a-9c812b627b1b',				# TODO Obfuscate
-		"resource_group": 'brainome',											# TODO Obfuscate
+# 		"workspace_name": 'XXXXXXXXXXXXXXX',
+# 		"subscription_id": 'XXXXXXXXXXXXXXXXX',
+# 		"resource_group": 'XXXXXXXXXXXXX',
 		# ####### AZURE COMPUTE CLUSTER ##############
 		"CPU_CLUSTER_NAME": "cpu-cluster-4",
 		"vm_size": "Standard_DS12_v2",
 		"max_nodes": "4",
 		# ######### GOOGLE TABLES ########
-		"BUCKET_NAME": "brainome-automl-central",								# TODO Obfuscate
-		"COMPUTE_REGION": 'us-central1',
-		"PROJECT_ID": "fifth-glazing-334722",									# TODO Obfuscate
+# 		"BUCKET_NAME": "bucket-name",
+# 		"COMPUTE_REGION": 'us-central1',
+# 		"PROJECT_ID": "project-id-1234",
 	}
 
 	@classmethod
