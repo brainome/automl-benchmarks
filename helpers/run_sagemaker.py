@@ -32,8 +32,8 @@ from user_variable import UserDefinedVariable
 # globals
 timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
 SESSION = sagemaker.Session()
-BUCKET = SESSION.default_bucket()
-ROLE = UserDefinedVariable(19, os.path.basename(__file__))
+BUCKET = UserDefinedVariable.get("bucket_name", os.path.basename(__file__))
+ROLE = UserDefinedVariable.get("sagemaker_role", os.path.basename(__file__))
 SAGEMAKER = boto3.Session().client(
     service_name="sagemaker", region_name=boto3.Session().region_name
 )
@@ -135,7 +135,7 @@ def run_predictions(verbose=False):
         ModelName=MODEL_NAME,
         TransformInput=TRANSFORM_INPUT,
         TransformOutput={"S3OutputPath": f"s3://{BUCKET}/inference-results"},
-        TransformResources={"InstanceType": UserDefinedVariable(121, os.path.basename(__file__)), "InstanceCount": 1},
+        TransformResources={"InstanceType": UserDefinedVariable.get("instance_type", os.path.basename(__file__)), "InstanceCount": 1},
     )
 
     describe_response = SAGEMAKER.describe_transform_job(
