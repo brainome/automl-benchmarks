@@ -27,15 +27,19 @@ class UndefinedUserVariable(Exception):
 
 class UserDefinedVariable:
 
-	creds = {
+	credentials = {
+		# ##### AWS SPECIFIC ######
 		# sagemaker role
-		"19": "arn:aws:iam::024158331100:role/role_sagemaker",
-                # instance type
-                "121" : "ml.m5.2xlarge",
+		"sagemaker_role": "arn:aws:iam::024158331100:role/role_sagemaker",
+		# sagemaker instance type
+		"instance_type": "ml.m5.2xlarge",
+		# S3 bucket name
+		"bucket_name": "download.brainome.ai"
 	}
 
-	def __init__(self, key, script):
+	@classmethod
+	def get(cls, key, script):
 		try:
-			return self.creds[key]
+			return cls.credentials[key]
 		except:
 			raise UndefinedUserVariable(key, script)
