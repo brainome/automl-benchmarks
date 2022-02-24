@@ -1,3 +1,19 @@
+# Brainome Daimensions(tm)
+#
+# The Brainome Table Compiler(tm)
+# Copyright (c) 2022 Brainome Incorporated. All Rights Reserved.
+# GPLv3 license, all text above must be included in any redistribution.
+# See LICENSE.TXT for more information.
+#
+# This program may use Brainome's servers for cloud computing. Server use
+# is subject to separate license agreement.
+#
+# Contact: itadmin@brainome.ai
+# for questions and suggestions.
+#
+# @author: zachary.stone@brainome.ai
+i
+
 import os
 import json
 
