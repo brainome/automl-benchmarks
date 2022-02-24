@@ -6,3 +6,4 @@ clean.state
 stub*.py
 venv*
 helpers/pred.py
+*.json
