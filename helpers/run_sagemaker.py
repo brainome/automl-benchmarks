@@ -68,7 +68,7 @@ TRANSFORM_INPUT = {
 
 def upload_data(verbose=False):
     start_upload = time.time()
-    train_data_s3_path = SESSION.upload_data(path=args.train_file, key_prefix=f"data/train")
+    train_data_s3_path = SESSION.upload_data(path=args.train_file, key_prefix=f"data_train")
     test_data_s3_path = SESSION.upload_data(
         path=args.test_file, key_prefix=f"data/test"
     )
