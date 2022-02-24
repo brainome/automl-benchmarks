@@ -1,3 +1,20 @@
+# Brainome Daimensions(tm)
+#
+# The Brainome Table Compiler(tm)
+# Copyright (c) 2022 Brainome Incorporated. All Rights Reserved.
+# GPLv3 license, all text above must be included in any redistribution.
+# See LICENSE.TXT for more information.
+#
+# This program may use Brainome's servers for cloud computing. Server use
+# is subject to separate license agreement.
+#
+# Contact: itadmin@brainome.ai
+# for questions and suggestions.
+#
+# @author: zachary.stone@brainome.ai
+# @author: andy.stevko@brainome.ai
+
+
 # Import required libraries
 import argparse
 import sagemaker
@@ -15,8 +32,8 @@ from user_variable import UserDefinedVariable
 # globals
 timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
 SESSION = sagemaker.Session()
-BUCKET = SESSION.default_bucket()
-ROLE = UserDefinedVariable(19, os.path.basename(__file__))
+BUCKET = UserDefinedVariable.get("bucket_name", os.path.basename(__file__))
+ROLE = UserDefinedVariable.get("sagemaker_role", os.path.basename(__file__))
 SAGEMAKER = boto3.Session().client(
     service_name="sagemaker", region_name=boto3.Session().region_name
 )
@@ -35,7 +52,7 @@ INPUT_DATA_CONFIG = [
         "DataSource": {
             "S3DataSource": {
                 "S3DataType": "S3Prefix",
-                "S3Uri": f"s3://{BUCKET}/data/train",
+                "S3Uri": f"s3://{BUCKET}/data_train",
             }
         },
         "TargetAttributeName": "",
@@ -51,9 +68,9 @@ TRANSFORM_INPUT = {
 
 def upload_data(verbose=False):
     start_upload = time.time()
-    train_data_s3_path = SESSION.upload_data(path=args.train_file, key_prefix=f"data/train")
+    train_data_s3_path = SESSION.upload_data(path=args.train_file, key_prefix=f"data_train")
     test_data_s3_path = SESSION.upload_data(
-        path=args.test_file, key_prefix=f"data/test"
+        path=args.test_file, key_prefix=f"data_test"
     )
     INPUT_DATA_CONFIG[0]["DataSource"]["S3DataSource"]["S3Uri"] = train_data_s3_path
     TRANSFORM_INPUT["DataSource"]["S3DataSource"]["S3Uri"] = test_data_s3_path
@@ -118,7 +135,7 @@ def run_predictions(verbose=False):
         ModelName=MODEL_NAME,
         TransformInput=TRANSFORM_INPUT,
         TransformOutput={"S3OutputPath": f"s3://{BUCKET}/inference-results"},
-        TransformResources={"InstanceType": UserDefinedVariable(121, os.path.basename(__file__)), "InstanceCount": 1},
+        TransformResources={"InstanceType": UserDefinedVariable.get("instance_type", os.path.basename(__file__)), "InstanceCount": 1},
     )
 
     describe_response = SAGEMAKER.describe_transform_job(

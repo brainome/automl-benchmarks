@@ -1,3 +1,19 @@
+# Brainome Daimensions(tm)
+#
+# The Brainome Table Compiler(tm)
+# Copyright (c) 2022 Brainome Incorporated. All Rights Reserved.
+# GPLv3 license, all text above must be included in any redistribution.
+# See LICENSE.TXT for more information.
+#
+# This program may use Brainome's servers for cloud computing. Server use
+# is subject to separate license agreement.
+#
+# Contact: itadmin@brainome.ai
+# for questions and suggestions.
+#
+# @author: zachary.stone@brainome.ai
+# @author: andy.stevko@brainome.ai
+
 from azureml.train.automl import AutoMLConfig
 from azureml.train.automl.run import AutoMLRun
 from azureml.core import Workspace, Datastore, Dataset, Run
@@ -25,11 +41,11 @@ import contextlib
 from user_variable import UserDefinedVariable
 
 # globals
-WORKSPACE = Workspace(workspace_name=UserDefinedVariable(28, os.path.basename(__file__)),
-		   subscription_id=UserDefinedVariable(29, os.path.basename(__file__)),
-		   resource_group=UserDefinedVariable(30, os.path.basename(__file__)),
-		   )
-CPU_CLUSTER_NAME = UserDefinedVariable(32, os.path.basename(__file__))
+WORKSPACE = Workspace(workspace_name=UserDefinedVariable.get("workspace_name"),
+				subscription_id=UserDefinedVariable.get("subscription_id"),
+				resource_group=UserDefinedVariable.get("resource_group"))
+
+CPU_CLUSTER_NAME = UserDefinedVariable.get("CPU_CLUSTER_NAME")
 
 def create_azure_data_set(path_to_local_data):
 	fname = path_to_local_data.split(os.sep)[-1]
@@ -41,8 +57,8 @@ def create_azure_data_set(path_to_local_data):
 def create_compute_cluster(args):
 	start = time.time()
 	# Choose a name for your CPU cluster	
-	vm_size = UserDefinedVariable(44, os.path.basename(__file__))
-	max_nodes = UserDefinedVariable(45, os.path.basename(__file__))
+	vm_size = UserDefinedVariable.get("vm_size")
+	max_nodes = UserDefinedVariable.get("max_nodes")
 
 	# Verify that cluster does not exist already
 	try:

@@ -1,3 +1,18 @@
+# Brainome Daimensions(tm)
+#
+# The Brainome Table Compiler(tm)
+# Copyright (c) 2022 Brainome Incorporated. All Rights Reserved.
+# GPLv3 license, all text above must be included in any redistribution.
+# See LICENSE.TXT for more information.
+#
+# This program may use Brainome's servers for cloud computing. Server use
+# is subject to separate license agreement.
+#
+# Contact: itadmin@brainome.ai
+# for questions and suggestions.
+#
+# @author: zachary.stone@brainome.ai
+
 import os
 import json
 import csv
@@ -73,8 +88,10 @@ def main(tool, suite, data_dir, clean=False):
 			path_to_trainfile = f"{data_dir}{os.sep}{trainfile}"
 
 			target = get_target(test_params, data_dir)
-			if not os.path.exists(train_data) or not os.path.exists(test_data) or not os.path.exists(test_data_targetless) \
-					or not os.path.exists(test_data_targetless_headered):
+			if not os.path.exists(train_data) or not os.path.exists(test_data)\
+				or not os.path.exists(test_data_targetless) \
+				or not os.path.exists(test_data_targetless_headered):
+
 				cmd = f'python3 helpers/split_data.py {path_to_trainfile} {SPLITS_DIR} -target {target}'
 				logger.info(cmd)
 				os.system(cmd)
@@ -120,9 +137,9 @@ def main(tool, suite, data_dir, clean=False):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('tool', type=str)
-	parser.add_argument('suite', type=str)
-	parser.add_argument('data_dir', type=str)
+	parser.add_argument('tool', type=str, help="in ['sagemaker', 'azure', 'tables']")
+	parser.add_argument('suite', type=str, help="test-suites/open_ml_select.tsv")
+	parser.add_argument('data_dir', type=str, default="", help="data/ directory")
 	parser.add_argument('-clean', action='store_true')
 	args = parser.parse_args()
 	assert args.tool in ['sagemaker', 'azure', 'tables']
@@ -132,4 +149,4 @@ if __name__ == '__main__':
 	SPLITS_DIR = 'TRAIN_TEST_SPLITS'
 	if not os.path.exists(SPLITS_DIR):
 		os.mkdir(SPLITS_DIR)
-	main(args.tool, args.suite, args.data_dir, args.clean)
+	main(args.tool, args.suite, "", args.clean)
