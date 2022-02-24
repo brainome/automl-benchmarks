@@ -38,7 +38,14 @@ brainome login
 
 echo "install aws cli e.g. python3 -m pip install awscli"
 
-echo "settings required"
+echo "create azure resources"
+
+echo "\nsetup google vertex env at https://cloud.google.com/vertex-ai/docs/start/cloud-environment"
+curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-374.0.0-linux-x86_64.tar.gz
+tar -xf google-cloud-sdk-374.0.0-linux-x86.tar.gz
+./google-cloud-sdk/install.sh
+./google-cloud-sdk/bin/gcloud init
+echo "settings required for install three clouds"
 vim helpers/user_variable.py
 
 

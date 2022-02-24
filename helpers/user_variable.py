@@ -27,6 +27,8 @@ class UserDefinedVariable:
 		# S3 bucket name
 		"bucket_name": "download.brainome.ai",									# TODO Obfuscate
 		# ####### AZURE Workspace params ##########
+		# see https://docs.microsoft.com/en-us/azure/machine-learning/quickstart-create-resources
+		# In the terminal, you may be asked to sign in to authenticate. Copy the code and follow the link to complete this step.
 		"workspace_name": 'brainome',											# TODO Obfuscate
 		"subscription_id": 'b245cbde-7433-4f70-b19a-9c812b627b1b',				# TODO Obfuscate
 		"resource_group": 'brainome',											# TODO Obfuscate
