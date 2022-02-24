@@ -90,30 +90,30 @@ echo "settings required for install three clouds"
 vim helpers/user_variable.py
 ```
 ```python
-	credentials = {
-		# ##### AWS ######
-		# REQUIRES "aws configure"
-		# sagemaker role
-		"sagemaker_role": "arn:aws:iam::XXXXXXXXXXX:role/role_sagemaker",
-		# sagemaker instance type
-		"instance_type": "ml.m5.2xlarge",
-		# S3 bucket name
-		"bucket_name": "my_s3_bucket",			
-		# ####### AZURE Workspace params ##########
-		# see https://docs.microsoft.com/en-us/azure/machine-learning/quickstart-create-resources
-		# In the terminal, you may be asked to sign in to authenticate. Copy the code and follow the link to complete this step.
-		"workspace_name": 'workspace',
-		"subscription_id": 'xxxxxxxxxxxxxxxxxxxxxxxxxx',
-		"resource_group": 'groups',
-		# ####### AZURE COMPUTE CLUSTER ##############
-		"CPU_CLUSTER_NAME": "cpu-cluster-4",
-		"vm_size": "Standard_DS12_v2",
-		"max_nodes": "4",
-		# ######### GOOGLE TABLES ########
-		"BUCKET_NAME": "bucket-name",
-		"COMPUTE_REGION": 'us-central1',
-		"PROJECT_ID": "project-id-1234",
-	}
+credentials = {
+    # ##### AWS ######
+    # REQUIRES "aws configure"
+    # sagemaker role
+    "sagemaker_role": "arn:aws:iam::XXXXXXXXXXX:role/role_sagemaker",
+    # sagemaker instance type
+    "instance_type": "ml.m5.2xlarge",
+    # S3 bucket name
+    "bucket_name": "my_s3_bucket",			
+    # ####### AZURE Workspace params ##########
+    # see https://docs.microsoft.com/en-us/azure/machine-learning/quickstart-create-resources
+    # In the terminal, you may be asked to sign in to authenticate. Copy the code and follow the link to complete this step.
+    "workspace_name": 'workspace',
+    "subscription_id": 'xxxxxxxxxxxxxxxxxxxxxxxxxx',
+    "resource_group": 'groups',
+    # ####### AZURE COMPUTE CLUSTER ##############
+    "CPU_CLUSTER_NAME": "cpu-cluster-4",
+    "vm_size": "Standard_DS12_v2",
+    "max_nodes": "4",
+    # ######### GOOGLE TABLES ########
+    "BUCKET_NAME": "bucket-name",
+    "COMPUTE_REGION": 'us-central1',
+    "PROJECT_ID": "project-id-1234",
+}
 ```
 # Demonstrations
 ## Measure Brainome (required)
