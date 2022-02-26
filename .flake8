@@ -1,0 +1,3 @@
+[flake8]
+# it's not a bug that we aren't using all of hacking
+ignore = W191, E501
