@@ -6,3 +6,4 @@ stub*.py
 venv*
 helpers/pred.py
 *.csv
+.daimensions.key

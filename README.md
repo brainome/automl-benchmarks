@@ -130,7 +130,7 @@ exit
 ## Fetch seed data from Open ML
 ```bash
 echo 'downloading data from open ml into ./data'
-python3 opem_ml_download_data.py data/
+python3 open_ml_download_data.py data/
 ```
 
 ## Configure credentials here
@@ -168,23 +168,24 @@ credentials = {
 ## Measure Brainome (required)
 ```bash
 source venv-brainome/bin/activate
-python3 open_ml_brainome_wrapper.py test-suites/open_ml_select.tsv data/
+python3 open_ml_brainome_wrapper.py
+python3 build_btc_table.py
 ```
 
 ## Running open_ml_experiment on sagemaker 
 ```bash
 source venv-sagemaker/bin/activate
-python3 open_ml_experiement.py sagemaker test-suites/open_ml_select.tsv data/
+python3 open_ml_experiement.py sagemaker
 ```
 
 ## Running open_ml_experiment on azure 
 ```bash
 source venv-azure/bin/activate
-python3 open_ml_experiement.py azure test-suites/open_ml_select.tsv data/
+python3 open_ml_experiement.py azure
 ```
 
 ## Running open_ml_experiment on google tables 
 ```bash
 source venv-tables/bin/activate
-python3 open_ml_experiement.py tables test-suites/open_ml_select.tsv data/
+python3 open_ml_experiement.py tables
 ```
