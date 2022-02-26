@@ -74,6 +74,8 @@ sudo apt install unzip
 Because the big three dependencies do not play well together.
 
 ### Setup venv-brainome for Brainome
+Register a free account for large data sets - https://app.brainome.ai/register
+Request a limit upgrade mailto:support@brainome.ai
 ```bash
 cd automl-benchmarks
 python3 -m venv venv-brainome
