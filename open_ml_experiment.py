@@ -16,12 +16,15 @@
 import os
 import json
 import csv
-from pathlib import Path
+from json import JSONDecodeError
 import sys
 import numpy as np
 import shutil
 import argparse
 import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def get_valid_test_id(test_id):
@@ -95,17 +98,17 @@ def main(tool, suite, data_dir, clean=False):
 				cmd = f'python3 helpers/split_data.py {path_to_trainfile} {SPLITS_DIR} -target {target}'
 				logger.info(cmd)
 				os.system(cmd)
-			
+
 			n_classes = np.unique(np.loadtxt(train_data, delimiter=',', usecols=[-1], skiprows=1)).shape[0]
 			n_rows = np.loadtxt(train_data, delimiter=',', usecols=[-1], skiprows=1).shape[0]
 			max_time = get_time(test_id)
-			
+
 			test_id = get_valid_test_id(test_id)
 			if tool == 'azure':
 				wrapper_cmd = f"python3 helpers/run_azure.py {train_data} {test_data} {target} {max_time} {test_id}"
 				if idx > 0:
 					# after the 0-th run, we have already uploaded all of the data
-					wrapper_cmd += " -du"			
+					wrapper_cmd += " -du"
 			elif tool == 'sagemaker':
 				max_time_per_job = max_time
 				max_time_total = max_time * 2
@@ -127,25 +130,31 @@ def main(tool, suite, data_dir, clean=False):
 				logger.info(f'tool \"{tool}\" is not valid.')
 				sys.exit(-1)
 
-			logger.info(f'wrapper_cmd: {wrapper_cmd}')			
+			logger.info(f'wrapper_cmd: {wrapper_cmd}')
 			result = os.popen(wrapper_cmd).read().strip()
 
 			logger.info(result)
 			with open(f"{RESULT_DIR}/{test_id}.json", 'w+') as outfile:
 				print(str(result), file=outfile)
-			
+
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('tool', type=str, help="in ['sagemaker', 'azure', 'tables']")
-	parser.add_argument('suite', type=str, help="test-suites/open_ml_select.tsv")
-	parser.add_argument('data_dir', type=str, default="", help="data/ directory")
-	parser.add_argument('-clean', action='store_true')
+	parser.add_argument('tool', choices=['sagemaker', 'azure', 'tables'], help="cloud service to benchmark")
+	parser.add_argument('suite', type=str, nargs='?', default="test-suites/open_ml_select.tsv", help="tsv file in test-suites")
+	parser.add_argument('data_dir', type=str, nargs='?', default="./data", help="data/ directory")
+	parser.add_argument('-clean', action='store_true', help="clean up files/directories")
 	args = parser.parse_args()
-	assert args.tool in ['sagemaker', 'azure', 'tables']
-	BTC_TIMES = json.load(open('btc-runs/btc-times.json'))
-	logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-	logger = logging.getLogger(__name__)
+
+	try:
+		with open('btc-runs/btc-times.json', "r") as btc_times:
+			BTC_TIMES = json.load(btc_times)
+	except FileNotFoundError:
+		print("Please run open_ml_brainome_wrapper.py to populate btc-times.json")
+		sys.exit(2)
+	except JSONDecodeError:
+		print("Please run open_ml_brainome_wrapper.py to populate btc-times.json")
+		sys.exit(2)
 	SPLITS_DIR = 'TRAIN_TEST_SPLITS'
 	if not os.path.exists(SPLITS_DIR):
 		os.mkdir(SPLITS_DIR)

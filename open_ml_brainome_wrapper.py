@@ -125,11 +125,11 @@ def main(suite, data_dir):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('suite', type=str)
-	parser.add_argument('data_dir', type=str)
+	parser.add_argument('suite', type=str, nargs='?', default="test-suites/open_ml_select.tsv", help="tsv file in test-suites")
+	parser.add_argument('data_dir', type=str, nargs='?', default="./data", help="data/ directory")
 	args = parser.parse_args()
 	if not os.path.exists(SPLITS_DIR):
 		os.mkdir(SPLITS_DIR)
-	main(args.suite, "")
+	main(args.suite, args.data_dir)
 
 

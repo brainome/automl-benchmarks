@@ -17,9 +17,52 @@
 -->
 
 # brainome/automl-benchmarks
-ML benchmarks comparing brainome, google, sage maker, and azure engines
+AutoML training & batch prediction benchmarks comparing Brainome, Google Vertex AI, AWS Sagemaker, and Azure AutoML engines
 
-## SETUP
+## Published results white paper 
+https://www.brainome.ai/automl-compare/
+
+## Table of contents
+
+- [Published results white paper](#published-results-white-paper)
+- [Methodology](#methodology)
+- [Setup](#setup)
+  - [4 Separate Virtual Environments](#4-separate-virtual-environments)
+  - [Fetch seed data from Open ML](#fetch-seed-data-from-open-ml)
+  - [Configure credentials](#configure-credentials-here)
+- [Demonstrations](#demonstrations)
+  - [Measure Brainome (required)](#measure-brainome-required)
+  - [Running open_ml_experiment on sagemaker](#running-open_ml_experiment-on-sagemaker)
+  - [Running open_ml_experiment on azure](#running-open_ml_experiment-on-azure)
+  - [Running open_ml_experiment on google tables](#running-open_ml_experiment-on-google-tables)
+
+## Methodology
+We selected 21 binary classification datasets from OpenML. They are a representative subset of the 100 binary classification datasets originally selected by Capital One and the University of Illinois Urbana-Champaign in their 2019 paper
+([“Towards Automated Machine Learning: Evaluation and Comparison of AutoML Approaches and Tools“](https://arxiv.org/abs/1908.05557)) by Ahn Truong. This paper attempted to compare the various AutoML platforms available at the time.
+
+Our benchmark recorded five key performance metrics: test accuracy, F1 score, training speed, prediction (or inference) speed and model size.
+
+The four AutoML systems benchmarked are:
+
+    Brainome data compiler (version 1.007) (Brainome)
+    
+    Google Cloud AutoML Tables / Vertex AI (GCML)
+    
+    Amazon SageMaker (SageMaker)
+    
+    Microsoft Azure Machine Learning (AzureML)
+
+There are no “version” numbers for GCML, SageMaker and AzureML but all tests were conducted between December 2021 and January 2022. 
+
+For consistency, all tests were automated via scripting using the respective API of each system. 
+
+Each dataset was split into a training dataset (70%) used exclusively for training and validation of the model and a held back test dataset (30%), used to compute the accuracy of the model. We used Brainome to clean the raw data files downloaded from OpenML to convert all non-numeric data into numbers and fill in any missing values before submitting to all 4 AutoML systems. This was necessary to ensure that all platforms were using the same exact starting point for training.
+
+In order to protect our budget from run away AutoML training charges, model building was limited to 1 hour or the Brainome run which ever was longer. 
+
+Brainome was run on a single EC2 m5.2xlarge. SageMaker and AzureML were run on similar hardware platforms equivalent (the suggested default for SageMaker). We did not have control of GCML’s hardware. 
+
+## Setup
 ### Cloning Source
 
 ```bash
@@ -27,9 +70,12 @@ echo "clone source"
 git clone git@github.com:brainome/automl-benchmarks.git
 sudo apt install unzip
 ```
-### From a new terminal session for each, create/activate FOUR virtual envs
+## 4 Separate Virtual Environments
+Because the big three dependencies do not play well together.
 
-### Setup venv-brainome
+### Setup venv-brainome for Brainome
+Register a free account for large data sets - https://app.brainome.ai/register
+Request a limit upgrade mailto:support@brainome.ai
 ```bash
 cd automl-benchmarks
 python3 -m venv venv-brainome
@@ -40,7 +86,10 @@ echo "brainome key required for large files"
 brainome login
 exit
 ```
-### Setup venv-azure
+### Setup venv-azure for Azure AutoML
+Provision the appropriate resources and limits here
+
+https://docs.microsoft.com/en-us/azure/machine-learning/quickstart-create-resources
 ```bash
 cd automl-benchmarks
 python3 -m venv venv-azure
@@ -50,7 +99,7 @@ python3 -m pip install -r requirements-azure.txt
 echo "create azure resources"
 exit
 ```
-### Setup venv-sagemaker
+### Setup venv-sagemaker for AWS
 ```bash
 echo "install aws cli e.g. python3 -m pip install awscli"
 cd automl-benchmarks
@@ -60,9 +109,12 @@ python3 -m pip install -U pip
 python3 -m pip install -r requirements-sagemaker.txt
 exit
 ```
-### Setup venv-tables
+### Setup venv-tables for Google Cloud Platform
+Google Cloud SDK setup 
+
+https://cloud.google.com/vertex-ai/docs/start/cloud-environment
 ```bash
-echo "setup google vertex env at https://cloud.google.com/vertex-ai/docs/start/cloud-environment"
+echo "setup google vertex env at "
 cd automl-benchmarks
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-374.0.0-linux-x86_64.tar.gz
 tar -xf google-cloud-sdk-374.0.0-linux-x86_64.tar.gz
@@ -79,9 +131,8 @@ exit
 ```
 ## Fetch seed data from Open ML
 ```bash
-echo 'downloading data from open ml into /Dropbox/Open_ML-Data/'
-mkdir -f "/Dropbox/Open_ML-Data/"
-python3 opem_ml_download_data.py
+echo 'downloading data from open ml into ./data'
+python3 open_ml_download_data.py data/
 ```
 
 ## Configure credentials here
@@ -119,23 +170,24 @@ credentials = {
 ## Measure Brainome (required)
 ```bash
 source venv-brainome/bin/activate
-python3 open_ml_brainome_wrapper.py test-suites/open_ml_select.tsv data/
+python3 open_ml_brainome_wrapper.py
+python3 build_btc_table.py
 ```
 
 ## Running open_ml_experiment on sagemaker 
 ```bash
 source venv-sagemaker/bin/activate
-python3 open_ml_experiement.py sagemaker test-suites/open_ml_select.tsv data/
+python3 open_ml_experiement.py sagemaker
 ```
 
 ## Running open_ml_experiment on azure 
 ```bash
 source venv-azure/bin/activate
-python3 open_ml_experiement.py azure test-suites/open_ml_select.tsv data/
+python3 open_ml_experiement.py azure
 ```
 
 ## Running open_ml_experiment on google tables 
 ```bash
 source venv-tables/bin/activate
-python3 open_ml_experiement.py tables test-suites/open_ml_select.tsv data/
+python3 open_ml_experiement.py tables
 ```

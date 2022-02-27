@@ -12,71 +12,126 @@
 # for questions and suggestions.
 #
 # @author: zachary.stone@brainome.ai
-i
+# @author: andy.stevko@brainome.ai
 
-import os
+import argparse
+import csv
 import json
+from json import JSONDecodeError
+from pathlib import Path
+
+OUTPUT_TSV = 'btc-runs/btc-results.tsv'
+
+""" generate a TSV with results from all the BTC runs
+requires 'btc-runs/btc-times.json'
+requires "btc-runs/{model_type}/{test_id}.json"
+"""
+
 
 def get_btc_val_acc(model_type, test_id):
-	handle = f"btc-runs/{model_type}/{test_id}.json"
-	json_dict = json.load(open(handle))
-	if args.test_suite == 'test-suites/multiclass.tsv':
-		val_acc = float(json_dict['session']['system_meter']['validation_stats']['accuracy'])
-	else:
-		val_acc = float(json_dict['session']['system_meter']['validation_accuracy'])
-	return val_acc
+    try:
+        model_results = get_test_model_results(model_type, test_id)
+        val_acc = float(model_results['session']['system_meter']['validation_stats']['accuracy'])
+    except KeyError:
+        return '--'
+    return val_acc
+
 
 def get_best_model(model_acc_dict):
-	best_model = 'RF'
-	best_acc = model_acc_dict['RF']
-	for model_type in MODEL_TYPES[1:]:
-			model_acc = model_acc_dict[model_type]
-			if model_acc > best_acc:
-				best_model = model_type
-				best_acc = model_acc
-	return best_model
+    best_model = 'RF'
+    best_acc = model_acc_dict['RF']
+    for model_type in MODEL_TYPES[1:]:
+        model_acc = model_acc_dict[model_type]
+        if model_acc > best_acc:
+            best_model = model_type
+            best_acc = model_acc
+    return best_model
+
 
 def get_from_test_results(model_type, test_id):
-	path_to_json = f'btc-runs/{model_type}/{test_id}.json'
-	json_dict = json.load(open(path_to_json))
-	test_acc = 100.0 * float(json_dict['test_acc'])
-	inference_time = float(json_dict['inference_time'])
-	f1 = float(json_dict['f1_score'])
-	return test_acc
+    try:
+        model_results = get_test_model_results(model_type, test_id)
+        test_acc = float(model_results['test_acc'])
+        inference_time = float(model_results['inference_time'])
+        f1 = float(model_results['f1_score'])
+    except KeyError:
+        return '--'
+    return test_acc
+
+
+def get_test_model_results(model_type, test_id) -> {}:
+    try:
+        path_to_json = Path(f'btc-runs/{model_type}/{test_id}.json')
+        with path_to_json.open("r") as json_file:
+            model_results = json.load(json_file)
+    except (OSError, JSONDecodeError):
+        return {}
+    return model_results
+
+
+def read_btc_times():
+    try:
+        path_to_json = Path('btc-runs/btc-times.json')
+        with path_to_json.open("r") as json_file:
+            btc_times = json.load(json_file)
+    except (OSError, JSONDecodeError):
+        return {}
+    return btc_times
+
+
+def sum_btc_times(btc_times, test_id):
+    """ aggregate model build times """
+    btc_run_time = 0.0      # in seconds
+    times = btc_times[test_id]
+    for mode_type in MODEL_TYPES:
+        btc_run_time += times[mode_type]
+    return btc_run_time
+
 
 def build_btc_tabled_detailed():
-	with open('btc-runs/btc-results.tsv', 'w+') as outfile:
-		print("test_id\tRF\tNN\tDT\tSVM\tbest_model\tbest_test_acc\tchosen_model\tchosen_test_acc", file=outfile)
-		for test_id in TEST_IDS:
-			
-			model_val_acc_dict = {model_type : get_btc_val_acc(model_type, test_id) for model_type in MODEL_TYPES}
-			chosen_model_type = get_best_model(model_val_acc_dict)
+    # load model build run times
+    btc_times = read_btc_times()
+    print(f"Writing {OUTPUT_TSV}")
+    with open(OUTPUT_TSV, 'w+') as outfile:
+        print("test_id\trun_time_sec\tchosen_model_type\tchosen_test_acc\tbest_model_type\tbest_test_acc\tRF_acc\tNN_acc\tDT_acc\tSVM_acc", file=outfile)
+        for test_id in TEST_IDS:
+            btc_run_time_sec = sum_btc_times(btc_times, test_id)
+            test_id_key = test_id.replace('-', '_')     # NOTE clean test_id so that it can be used as dict key
+            model_val_acc_dict = {model_type: get_btc_val_acc(model_type, test_id_key) for model_type in MODEL_TYPES}
+            chosen_model_type = get_best_model(model_val_acc_dict)
 
-			model_test_acc_dict = {model_type : get_from_test_results(model_type, test_id) for model_type in MODEL_TYPES}
-			best_model_type = get_best_model(model_test_acc_dict)
+            model_test_acc_dict = {model_type: get_from_test_results(model_type, test_id_key) for model_type in MODEL_TYPES}
+            best_model_type = get_best_model(model_test_acc_dict)
 
-			print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
-					test_id,
-					model_test_acc_dict['RF'],
-					model_test_acc_dict['NN'],
-					model_test_acc_dict['DT'],
-					model_test_acc_dict['SVM'],
-					best_model_type,
-					model_test_acc_dict[best_model_type],
-					chosen_model_type,
-					model_test_acc_dict[chosen_model_type]
-				), file=outfile)
+            print("{}\t{:.1f}\t{}\t{:.3%}\t{}\t{:.3%}\t{:.3%}\t{:.3%}\t{:.3%}\t{:.3%}".format(
+                test_id,
+                btc_run_time_sec,
+                chosen_model_type,
+                model_test_acc_dict[chosen_model_type],
+                best_model_type,
+                model_test_acc_dict[best_model_type],
+                model_test_acc_dict['RF'],
+                model_test_acc_dict['NN'],
+                model_test_acc_dict['DT'],
+                model_test_acc_dict['SVM'],
+            ), file=outfile)
 
 
 def get_test_ids(test_suite):
-	test_ids = []
-	with open(test_suite) as f:
-		reader = csv.DictReader(f, delimiter='\t')
-		for row in reader:
-			test_ids.append(row['TEST_ID'])
-	return test_ids
+    test_ids = []
+    with open(test_suite) as f:
+        reader = csv.DictReader(f, delimiter='\t')
+        for row in reader:
+            test_ids.append(row['TEST_ID'])
+    return test_ids
+
 
 if __name__ == '__main__':
-	TEST_IDS = get_test_ids(args.test_suite)
-	MODEL_TYPES = ['RF', 'NN', 'DT', 'SVM']
-	build_btc_tabled_detailed()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('suite', type=str, nargs='?', default="test-suites/open_ml_select.tsv",
+                        help="tsv file in test-suites")
+    args = parser.parse_args()
+    #
+    TEST_IDS = get_test_ids(args.suite)
+    MODEL_TYPES = ['RF', 'NN', 'DT', 'SVM']
+    build_btc_tabled_detailed()
