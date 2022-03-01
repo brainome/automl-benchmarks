@@ -7,3 +7,4 @@ venv*
 helpers/pred.py
 *.csv
 .daimensions.key
+sagemaker-runs/
