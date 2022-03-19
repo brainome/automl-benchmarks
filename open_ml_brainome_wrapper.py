@@ -27,7 +27,7 @@ from open_ml_experiment import get_target, get_valid_test_id
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
-MODEL_TYPES = ['RF', 'NN', 'DT', 'SVM']
+MODEL_TYPES = ['classify', 'RF', 'NN', 'DT', 'SVM']
 SPLITS_DIR = 'TRAIN_TEST_SPLITS'
 BTC_TIMES = {}
 
@@ -60,7 +60,11 @@ def make_predictor(test_params, model_type, data_dir, multiclass=False):
 	test_id = test_params.get('TEST_ID').replace('-', '_')
 	csv_name = test_params.get('TRAIN_FILE').split(os.sep)[-1].replace('.csv', '')
 	train_file = f"TRAIN_TEST_SPLITS/{csv_name}-clean-train.csv"
-	cmd = f"brainome {train_file} -f {model_type} -y -split 70 -modelonly -q -o btc-runs/{model_type}/{test_id}.py -json btc-runs/{model_type}/{test_id}.json"
+	cmd = f"./brainome {train_file} -y -split 70 -modelonly -q -o btc-runs/{model_type}/{test_id}.py -json btc-runs/{model_type}/{test_id}.json"
+	if model_type == 'classify':
+		cmd += ' -classify'
+	else:
+		cmd += f' -f {model_type}'
 	if model_type == 'DT':
 		cmd += ' -rank'
 	if model_type == 'RF' and multiclass:

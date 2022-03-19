@@ -20,10 +20,13 @@ import os
 import json
 import csv
 import argparse
+import logging
 from open_ml_experiment import get_valid_test_id
 
+logger = logging.getLogger('__main__')
 
-MODEL_TYPES = ['RF', 'NN', 'DT', 'SVM']
+MODEL_TYPES = ['classify', 'RF', 'NN', 'DT', 'SVM']
+DEFAULT_MODEL = MODEL_TYPES[0]
 
 def get_test_ids(test_suite):
 	test_ids = []
@@ -42,8 +45,8 @@ def get_btc_val_acc(model_type, test_id):
 
 
 def get_best_model(model_acc_dict):
-	best_model = 'RF'
-	best_acc = model_acc_dict['RF']
+	best_model = DEFAULT_MODEL
+	best_acc = model_acc_dict[DEFAULT_MODEL]
 	for model_type in MODEL_TYPES[1:]:
 			model_acc = model_acc_dict[model_type]
 			if model_acc > best_acc:

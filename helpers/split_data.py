@@ -33,7 +33,7 @@ def remove_clean_CSVs():
 
 def clean_CSV_with_btc(CSV, dest, target):
 	remove_clean_CSVs()
-	cmd = f'brainome {CSV} -cleanonly'
+	cmd = f'./brainome {CSV} -cleanonly'
 	if target:
 		cmd += f' -target {target}'
 	subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
